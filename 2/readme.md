@@ -19,12 +19,16 @@
 ## 1 MCS-51单片机结构 
 #### 1.1 MCS-51单片机的内部结构 
 SCM——将通用微计算机基本功能部件集成在一块芯片上构成的一种专用微计算机系统
+
 ![51单片机结构组成](https://upload-images.jianshu.io/upload_images/1887348-b4bc2c0140115c00.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
 SCM = CPU+OSC+ROM+RAM+T/C+INT+ BEC+I/O+UART
 80C51=(8位）CPU + 4KBROM + 128BRAM + (2×16)T/C + (4×8)I/O + 1个UART +5个INT + 2个64KB BEC
 ***
 CPU = 控制器 + 运算器
+
 ![cpu](https://upload-images.jianshu.io/upload_images/1887348-00d0c8c279f1343b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
 控制器
 >控制器的用途：统一指挥和控制各单元协调工作
 控制器的任务：从ROM中取出指令→译码→执行指令
@@ -41,6 +45,7 @@ PSW:存放程序运行过程中的各种状态信息的寄存器*
 
 ![PSW](https://upload-images.jianshu.io/upload_images/1887348-b8d8c5345c1eee6d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 ```
+
 CY（PSW.7）——进位标志.在进行加或减运算时，如果操作结果最高位有进位
 或借位时CY由硬件置“1”，否则清“0”。可根据CY判断有无进位或借位；可作
 为位操作中的位累加器用。
@@ -68,6 +73,7 @@ P（PSW.0） ——奇偶标志位.该位始终跟踪累加器A中含“1”个�
 51系列单片机一般采用40只引脚的双列直插式（DIP——Dual In-line Package）封装结构
 除DIP封装外， 51单片机还采用44只引脚的方形扁平(QFP 
 ——Quad Flat Package) 封装方式（4只引脚无用）。 
+
 ![DIP引脚分布](https://upload-images.jianshu.io/upload_images/1887348-6a7cbdb19cbfb9ae.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 80C51单片机的40只引脚按功能分为以下三类：
@@ -108,7 +114,9 @@ P0口～P3口是单片机对外联络的重要通道
 51单片机采用哈佛结构，共有4个物理存储空间：
 片内RAM、片内ROM、片外RAM、片外ROM
 `程序存储器ROM` `数据存储器RAM`
+
 ![MCS-51单片机存储结构](https://upload-images.jianshu.io/upload_images/1887348-f7232cad11c79bd5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
 51单片机的四个物理存储空间仅相当于三个逻辑存储空间
 
 #### 2.2 程序存储器（ROM）
@@ -119,7 +127,9 @@ P0口～P3口是单片机对外联络的重要通道
 >EA=1时为方案1， EA=0时为方案2
 方案1 ： 4 KB以内的地址在片内ROM，大于4KB的地址在片外ROM中（图中折线），两者共同构成64KB空间；
 方案2 ：片内ROM被禁用，全部64KB地址都在片外ROM中（图中直线）。
+
 ![ROM](https://upload-images.jianshu.io/upload_images/1887348-b0c2ed83a6448479.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
 由于片内、外ROM是统一编址的，故只能算作1个逻辑存储空间。
 
 
@@ -135,7 +145,9 @@ ROM有6个特殊存储器单元——用于程序引导
 #### 2.3 数据存储器(RAM)
 数据存储器用于存放运算中间结果、标志位、待调试的程序等。数据存储器由RAM构成，一旦掉电，其数据将丢失。
 数据存储器在物理上和逻辑上都占有两个地址空间：一个是片内256B的RAM，另一个是片外最大可扩充的64KB的RAM。
+
 ![片内RAM配置](https://upload-images.jianshu.io/upload_images/1887348-c706d601af76435b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
 片内RAM分为高128B、低128B两部分，其中，低128B（ 00H～7FH ）为普通RAM区，高128B （80H～FFH）为特殊功能寄存器区
 
 * 低128BRAM区
@@ -149,6 +161,7 @@ ROM有6个特殊存储器单元——用于程序引导
     CPU只能选一组为当前工作寄存器组
     当前工作寄存器组取决于PSW的设置 
     CPU复位后RS1和 RS0默认值为0，即默认第0组为当前工作寄存器组。 
+
     ![工作寄存器的地址分配表](https://upload-images.jianshu.io/upload_images/1887348-a41e9586ac9cdd7f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 	②可位寻址区（20H～2FH）
@@ -157,6 +170,7 @@ ROM有6个特殊存储器单元——用于程序引导
     每个单元都有8个不同的位地址
     共有128个位地址 
     可以字节地址和位地址两种方式存取数据
+
     ![位寻址与地址寻址](https://upload-images.jianshu.io/upload_images/1887348-e0f3f18803954a7f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
     ③用户RAM区（30H～7FH）
@@ -167,6 +181,7 @@ ROM有6个特殊存储器单元——用于程序引导
 * 高128BRAM区
 每个存储单元都有一个字节地址，但只有其中21个单元可以使用，并有相应寄存器名称。
 51单片机共有21个特殊功能寄存器（SFR）：
+
 ![SFR的名称及其分布](https://upload-images.jianshu.io/upload_images/1887348-189b85d21d7f7553.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 ## 3 单片机的复位、时钟与时序 

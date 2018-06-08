@@ -109,8 +109,66 @@ P0口～P3口是单片机对外联络的重要通道
 片内RAM、片内ROM、片外RAM、片外ROM
 `程序存储器ROM` `数据存储器RAM`
 ![MCS-51单片机存储结构](https://upload-images.jianshu.io/upload_images/1887348-f7232cad11c79bd5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
-#### 2.2 程序存储器
-#### 2.3 数据存储器
+51单片机的四个物理存储空间仅相当于三个逻辑存储空间
+
+#### 2.2 程序存储器（ROM）
+
+作用：存放程序、表格或常数，具有非易失性
+特点：片内ROM与片外ROM可有2种组合方案
+由!(EA)引脚的电平状态决定对片内，片外两种ROM的选择：
+>EA=1时为方案1， EA=0时为方案2
+方案1 ： 4 KB以内的地址在片内ROM，大于4KB的地址在片外ROM中（图中折线），两者共同构成64KB空间；
+方案2 ：片内ROM被禁用，全部64KB地址都在片外ROM中（图中直线）。
+![ROM](https://upload-images.jianshu.io/upload_images/1887348-b0c2ed83a6448479.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+由于片内、外ROM是统一编址的，故只能算作1个逻辑存储空间。
+
+
+ROM有6个特殊存储器单元——用于程序引导
+>   0000H：主程序入口地址
+    0003H：INT0中断程序入口地址
+    000BH：T0中断程序入口地址
+    0013H：INT1中断程序入口地址
+    001BH：T1中断程序入口地址
+    0023H：RI/TI中断程序入口地址
+中断程序执行过程：某一突发事件→相应中断入口地址自动装入PC→引导两次跳转→执行相应中断服务程序主程序一般应安排在0030H地址以后（有中断需要时）
+
+#### 2.3 数据存储器(RAM)
+数据存储器用于存放运算中间结果、标志位、待调试的程序等。数据存储器由RAM构成，一旦掉电，其数据将丢失。
+数据存储器在物理上和逻辑上都占有两个地址空间：一个是片内256B的RAM，另一个是片外最大可扩充的64KB的RAM。
+![片内RAM配置](https://upload-images.jianshu.io/upload_images/1887348-c706d601af76435b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+片内RAM分为高128B、低128B两部分，其中，低128B（ 00H～7FH ）为普通RAM区，高128B （80H～FFH）为特殊功能寄存器区
+
+* 低128BRAM区
+    此区又可分为三个区：①工作寄存器区（00H～1FH）②可位寻址区（20H～2FH）③用户RAM区（30H～7FH）
+    **注意：①区和③区只能按字节进行数据存取操作，②区则可按字节和位两种方式存取操作**
+    ①工作寄存器区（00H～1FH） 
+    >共有32个存储单元；
+    每个单元都有1个8位地址（字节地址）
+    每个单元都有1个寄存器名称（R0～R7）
+    32个单元分为4组（第0 ～ 第3组）
+    CPU只能选一组为当前工作寄存器组
+    当前工作寄存器组取决于PSW的设置 
+    CPU复位后RS1和 RS0默认值为0，即默认第0组为当前工作寄存器组。 
+    ![工作寄存器的地址分配表](https://upload-images.jianshu.io/upload_images/1887348-a41e9586ac9cdd7f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+	②可位寻址区（20H～2FH）
+    >共有16个存储单元；
+    每个单元都有一个字节地址
+    每个单元都有8个不同的位地址
+    共有128个位地址 
+    可以字节地址和位地址两种方式存取数据
+    ![位寻址与地址寻址](https://upload-images.jianshu.io/upload_images/1887348-e0f3f18803954a7f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+    ③用户RAM区（30H～7FH）
+    >共有80个存储单元；
+    每个单元都有一个字节地址，但没有位地址，也没有寄存器名。
+    此区可作为堆栈区和中间数据存储区使用——用户RAM区
+
+* 高128BRAM区
+每个存储单元都有一个字节地址，但只有其中21个单元可以使用，并有相应寄存器名称。
+51单片机共有21个特殊功能寄存器（SFR）：
+![SFR的名称及其分布](https://upload-images.jianshu.io/upload_images/1887348-189b85d21d7f7553.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
 ## 3 单片机的复位、时钟与时序 
 #### 3.1 复位与复位电路
 #### 3.2 时钟电路

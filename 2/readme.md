@@ -4,8 +4,8 @@
       * [1\.2 MCS\-51引脚及功能](#12-mcs-51%E5%BC%95%E8%84%9A%E5%8F%8A%E5%8A%9F%E8%83%BD)
   * [2 MCS\-51的存储器结构](#2-mcs-51%E7%9A%84%E5%AD%98%E5%82%A8%E5%99%A8%E7%BB%93%E6%9E%84)
       * [2\.1 存储器划分方法](#21-%E5%AD%98%E5%82%A8%E5%99%A8%E5%88%92%E5%88%86%E6%96%B9%E6%B3%95)
-      * [2\.2 程序存储器](#22-%E7%A8%8B%E5%BA%8F%E5%AD%98%E5%82%A8%E5%99%A8)
-      * [2\.3 数据存储器](#23-%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E5%99%A8)
+      * [2\.2 程序存储器（ROM）](#22-%E7%A8%8B%E5%BA%8F%E5%AD%98%E5%82%A8%E5%99%A8rom)
+      * [2\.3 数据存储器(RAM)](#23-%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E5%99%A8ram)
   * [3 单片机的复位、时钟与时序](#3-%E5%8D%95%E7%89%87%E6%9C%BA%E7%9A%84%E5%A4%8D%E4%BD%8D%E6%97%B6%E9%92%9F%E4%B8%8E%E6%97%B6%E5%BA%8F)
       * [3\.1 复位与复位电路](#31-%E5%A4%8D%E4%BD%8D%E4%B8%8E%E5%A4%8D%E4%BD%8D%E7%94%B5%E8%B7%AF)
       * [3\.2 时钟电路](#32-%E6%97%B6%E9%92%9F%E7%94%B5%E8%B7%AF)
@@ -15,6 +15,8 @@
       * [4\.2 P3口](#42-p3%E5%8F%A3)
       * [4\.3 P0口](#43-p0%E5%8F%A3)
       * [4\.4 P2口](#44-p2%E5%8F%A3)
+      * [P0～P3小结](#p0p3%E5%B0%8F%E7%BB%93)
+  * [小结](#%E5%B0%8F%E7%BB%93)
 # MCS-51单片机结构及原理
 ## 1 MCS-51单片机结构 
 #### 1.1 MCS-51单片机的内部结构 
@@ -186,10 +188,187 @@ ROM有6个特殊存储器单元——用于程序引导
 
 ## 3 单片机的复位、时钟与时序 
 #### 3.1 复位与复位电路
+>单片机在开机时需要复位，使CPU及其他功能部件处于一个确定的初始状态；另外在单片机死机时，也需要复位。
+复位——使单片机恢复原始默认状态的操作。
+
+![复位时片内各寄存器的初始值](https://upload-images.jianshu.io/upload_images/1887348-a6434c098e8b67f1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+复位条件:在RST/VPD引脚端出现：≥10ms时间的高电平（≥3V）状态
+复位方式：
+
+![复位方式](https://upload-images.jianshu.io/upload_images/1887348-b465e9d2e2a29438.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
 #### 3.2 时钟电路
+单片机执行指令的过程可以分为取指令， 分析指令和执行指令三个步骤，每个步骤又由许多微操作组成，这些微操作必须在一个统一的时钟控制下才能按照正确的顺序执行。
+
+单片机需要统一的时钟控制，其时钟系统可有两种方案：
+内部OSC + 外部时钟电路，或内部OSC + 外部时钟脉冲
+
+![外部时钟电路](https://upload-images.jianshu.io/upload_images/1887348-096ac3d20b2a3514.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+![外部时钟脉冲](https://upload-images.jianshu.io/upload_images/1887348-8f6a5851a2a75457.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+MCS-51的时钟频率一般为6～12MHz
+
 #### 3.3 单片机时序
+* 时序的概念
+时序是对象（或引脚、事件、信息）间按照时间顺序组成的序列关系。
+时序可以用状态方程、状态图、状态表和时序图4种方法表示，其中时序图最为常用。
+时序图亦称为波形图或序列图，纵坐标表示不同对象的电平，横坐标表示时间（从左往右为时间正向轴），通常坐标轴可省略。
+    >以下图为例：
+(1) 最左边是引脚的标识，表示该图反映了RS、R/W、E、D0~D7四类引脚的序列关系。 
+(2) 交叉线部分表示电平的变化，如高电平和低电平。 
+(3) 封闭菱形部分表示数据有效范围（偶尔使用文字Valid Data）。
+(4) 水平方向的尺寸线表示持续时间的长度。
+![](https://upload-images.jianshu.io/upload_images/1887348-6224e6d68fbf2b97.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+    时序关系：
+RS和R/W端首先变为低电平；
+随后D0~D7端出现有效数据；
+R/W低电平tsp1之后，E端出现宽度为tpm的正脉冲；
+E脉冲结束并延时tHD1后，RS和R/W端恢复高电平；
+E脉冲结束并延时tHD2后，D0~D7端的本次数据结束；
+随后D0~D7端出现新的数据，但下次E脉冲应在tc时间后才能出现。根据这些信息便可以进行相应的软件编程了。
+
+* 时钟的度量单位：
+时钟周期（或节拍）P、状态周期S、机器周期、指令周期
+    >MCS-51各种周期之间的关系
+![MCS-51各种周期之间的关系](https://upload-images.jianshu.io/upload_images/1887348-489f4e00adceedbe.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+1个状态周期（S）= 2个节拍（P）
+1个机器周期 = 6个状态（S） =12个节拍（P）
+1个指令周期约为1～4个机器周期
+
+
+* 时序与时钟的关系——时序要受时钟节拍的制约
+    >`ADC0809芯片的完整时序图`
+![ADC0809芯片的完整时序图](https://upload-images.jianshu.io/upload_images/1887348-07f163aaf309ee4a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+* 单片机时序——CPU在执行指令时所需控制信号的时间顺序
+CPU实质上就是一个复杂的同步时序电路，这个时序电路是在时钟信号的推动下工作的。在执行指令时，CPU首先要到存储器中取出需要执行指令的指令码，然后对指令进行译码，并由时序部件产生一系列控制信号去完成指令的执行。
+从用途来看，CPU发出的时序信号可以分为两类：
+1、用于片内各功能部件的逻辑控制
+2、用于片外RAM访问或总线方式控制
+
+单片机常用时序逻辑元件——D触发器（或边沿D触发器）
+D触发器可以分为正边沿D触发器和负边沿D触发器
+>正边D沿触发器
+正边沿D触发器的原理：
+![正边沿D触发器的原理](https://upload-images.jianshu.io/upload_images/1887348-32a21f11f9e8ae4e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+只在时钟脉冲CLK上升沿到来的时刻，才采样D端的输入信号，并据此立即改变Q和/Q端的输出状态。而在其它时刻，D与Q是信号隔离的。 
+
+>负边沿D触发器
+负边沿D触发器的原理
+![负边沿D触发器的原理](https://upload-images.jianshu.io/upload_images/1887348-5d5159d068acb913.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+负边沿D触发器工作特性
+只在时钟脉冲CLK下降沿到来的时刻，才采样D端的输入信号，并据此立即改变Q和/Q端的输出状态。而在其它时刻，D与Q是信号隔离的。
+D触发器的这一特性被广泛用于数字信号的锁存输出。
+
+
+
 ## 4 并行I/O口 
+51单片机有32只I/O引脚，分属于4个端口（P0～P3）。
+
+可作为并行I/O输入通道（例如，按键/开关连接通道）
+
+![按键/开关连接通道](https://upload-images.jianshu.io/upload_images/1887348-7af8f789fcda5829.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+可作为并行I/O输出通道（例如，数码管显示器连接通道）
+
+![数码管显示器连接通道](https://upload-images.jianshu.io/upload_images/1887348-d69bcbd6df6e83ec.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+可作为串行通信通道（例如，双机通讯的连接通道）
+
+![双机通讯的连接通道](https://upload-images.jianshu.io/upload_images/1887348-09c78ab685882393.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+可作为外部设备的连接通道（例如，存储器扩展通道）
+
+![存储器扩展通道](https://upload-images.jianshu.io/upload_images/1887348-b369c9bbc80c6ec2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+
 #### 4.1 P1口
+P1口包含P1.0～P1.7共8个相同结构的电路
+* P1口结构图：
+![P1口结构图](https://upload-images.jianshu.io/upload_images/1887348-a4755ea27bf10223.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+P1.n = 1个锁存器 + 1个场效应管驱动器V + 2个三态门缓冲器
+P1.0～P1.7中的8个锁存器共同组成P1特殊功能寄存器(90H)
+
+* P1.n的通用I/O口工作方式：
+    1. 输出方式；MOV P1,#data
+    2. 读引脚方式；MOV A,P1
+    3. 读锁存器方式；ANL P1,A
+* 要点
+    1. P1口具有通用I/O口方式，可实现输出、读引脚（输入）和读锁存器三种功能；
+    2. P1口为准双向通用口，作为通用输入口时应先使P1.n→1，作为通用输出口时是无条件的。
+
+
 #### 4.2 P3口
+与P1.n 差别：第二功能控制单元→双功能 
+
+* P3口结构图
+
+![P3口结构图](https://upload-images.jianshu.io/upload_images/1887348-c0dc4c37263c6937.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+* P3.n的通用I/O口工作方式：
+    1. 输出；
+    2. 读引脚；
+    3. 读锁存器；
+* 要点
+    1. P3口具有通用I/O口方式，可实现输出、读引脚（输入）和读锁存器三种功能；
+    2. P3口为准双向通用口，作为通用输入口时应先使P3.n→1，作为通用输出口时应先使第二输出端→1 ；
+    3. P3口具有第二功能方式，可实现第二输出和第二输入两种功能。
+
 #### 4.3 P0口
+与P1.n 差别：输出控制电路、 输出驱动电路→总线功能 
+
+* P0口结构图
+
+![P0口结构图](https://upload-images.jianshu.io/upload_images/1887348-ea5720a008d4b1a1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+* P0.n的通用I/O口工作方式：
+    1. 输出；
+    2. 读引脚；
+    3. 读锁存器；
+* P0.n的地址/数据分时复用方式：
+    1. 地址/数据输出
+    2. 数据输入
+
+* 要点
+    1. P0口具有通用I/O口方式，可实现输出、读引脚（输入）和读锁存器三种功能；
+    2. P0口为准双向通用口，作为通用输入口时应先使P3.n→1，作为通用输出口时应先使第二输出端→1 ；
+    3. 作为通用I/O口方式时，需要外接上拉电阻；
+    4. P0口具有地址/数据分时复用方式，可实现地址/数据输出、数据输入两种功能；
+    5. 地址/数据分时复用方式时无需外接上拉电阻；
+    6. 分时复用方式的数据输入时无需程序写1操作。
+
 #### 4.4 P2口
+与P1.n差别：输出控制单元，锁存信号由Q端输出
+
+* P2口结构图
+
+![P2口结构图](https://upload-images.jianshu.io/upload_images/1887348-e7729f082fc709ee.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+* P2.n的通用I/O口工作方式：
+    1. 输出；
+    2. 读引脚；
+    3. 读锁存器；
+* 要点
+    1. P2口具有通用I/O口方式，可实现输出、读引脚（输入）和读锁存器三种功能；
+    2. P2口为准双向通用口，作为通用输入口时应先使P2.n→1，作为通用输出口时应先使控制端→1 ；
+    3. 作为通用I/O口方式时，无需外接上拉电阻；
+        4. P2口具有地址输出方式，可实现地址输出功能。
+
+#### P0～P3小结
+1. 结构
+
+![结构](https://upload-images.jianshu.io/upload_images/1887348-a1ec94e3f421a9e0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+2. 功能
+
+![功能](https://upload-images.jianshu.io/upload_images/1887348-99693a3be1d117c0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+
+## 小结
+1. 单片机的CPU由控制器和运算器组成，在时钟电路和复位电路的支持下，按一定的时序工作。单片机的时序信号包括振荡周期、时钟周期、机器周期和指令周期。
+2. 51单片机采用哈佛结构存储器，共有3个逻辑存储空间和4个物理存储空间。片内低128字节RAM中包含4个工作寄存器组、128个位地址单元和80个字节地址单元。片内高128字节RAM中离散分布有21个特殊功能寄存器。
+3.  P0～P3口都可作为准双向通用I/O口，其中只有P0口需要外接上拉电阻；在需要扩展片外设备时，P2口可作为其地址线接口，P0口可作为其地址线/数据线复用接口，此时它是真正的双向口。 
+

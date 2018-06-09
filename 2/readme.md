@@ -216,11 +216,13 @@ MCS-51的时钟频率一般为6～12MHz
 时序可以用状态方程、状态图、状态表和时序图4种方法表示，其中时序图最为常用。
 时序图亦称为波形图或序列图，纵坐标表示不同对象的电平，横坐标表示时间（从左往右为时间正向轴），通常坐标轴可省略。
     >以下图为例：
-(1) 最左边是引脚的标识，表示该图反映了RS、R/W、E、D0~D7四类引脚的序列关系。 
+(1) 最左边是引脚的标识，表示该图反映了RS、R/W、E、D0-D7四类引脚的序列关系。 
 (2) 交叉线部分表示电平的变化，如高电平和低电平。 
 (3) 封闭菱形部分表示数据有效范围（偶尔使用文字Valid Data）。
 (4) 水平方向的尺寸线表示持续时间的长度。
+
 ![](https://upload-images.jianshu.io/upload_images/1887348-6224e6d68fbf2b97.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
     时序关系：
 RS和R/W端首先变为低电平；
 随后D0~D7端出现有效数据；
@@ -232,7 +234,9 @@ E脉冲结束并延时tHD2后，D0~D7端的本次数据结束；
 * 时钟的度量单位：
 时钟周期（或节拍）P、状态周期S、机器周期、指令周期
     >MCS-51各种周期之间的关系
+
 ![MCS-51各种周期之间的关系](https://upload-images.jianshu.io/upload_images/1887348-489f4e00adceedbe.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
 1个状态周期（S）= 2个节拍（P）
 1个机器周期 = 6个状态（S） =12个节拍（P）
 1个指令周期约为1～4个机器周期
@@ -240,6 +244,7 @@ E脉冲结束并延时tHD2后，D0~D7端的本次数据结束；
 
 * 时序与时钟的关系——时序要受时钟节拍的制约
     >`ADC0809芯片的完整时序图`
+
 ![ADC0809芯片的完整时序图](https://upload-images.jianshu.io/upload_images/1887348-07f163aaf309ee4a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 * 单片机时序——CPU在执行指令时所需控制信号的时间顺序
@@ -252,12 +257,16 @@ CPU实质上就是一个复杂的同步时序电路，这个时序电路是在�
 D触发器可以分为正边沿D触发器和负边沿D触发器
 >正边D沿触发器
 正边沿D触发器的原理：
+
 ![正边沿D触发器的原理](https://upload-images.jianshu.io/upload_images/1887348-32a21f11f9e8ae4e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
 只在时钟脉冲CLK上升沿到来的时刻，才采样D端的输入信号，并据此立即改变Q和/Q端的输出状态。而在其它时刻，D与Q是信号隔离的。 
 
 >负边沿D触发器
 负边沿D触发器的原理
+
 ![负边沿D触发器的原理](https://upload-images.jianshu.io/upload_images/1887348-5d5159d068acb913.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
 负边沿D触发器工作特性
 只在时钟脉冲CLK下降沿到来的时刻，才采样D端的输入信号，并据此立即改变Q和/Q端的输出状态。而在其它时刻，D与Q是信号隔离的。
 D触发器的这一特性被广泛用于数字信号的锁存输出。
